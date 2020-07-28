@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const koa = require('koa');
-const { createContext } = require('vm');
 
 const app = new koa();
 
@@ -12,16 +11,29 @@ app.use(async (ctx) => {
         let content = fs.readFileSync('./index.html', 'utf-8');
         ctx.body = content;
     } else if (url.endsWith('.js')) {
-        console.log(path.resolve(__dirname));
-        console.log('url:', url)
         const p = path.resolve(__dirname, url.slice(1));
-        console.log('p', p);
         const content = fs.readFileSync(p, 'utf-8');
-        ctx.type = "application/javascript"
-        ctx.body = content;
+        ctx.type = "application/javascript";
+        // 需要将js文件中的import xxx from 'vue' 改造成import xxx from '@modules/vue'
+        ctx.body = rewriteimport(content);
     }
-    console.log('hello')
 })
+
+/* 
+将import xxx from 'vue'  改写成 import xxx from '@modules/vue'
+
+*/
+function rewriteimport(content) {
+    console.log(/from ['"]([^'"]+)['"]/g.test(content))
+    return content.replace(/from ['"]([^'"]+)['"]/g, function (s0, s1) {
+        console.log('s0', s0);
+        console.log('s1', s1);
+        if (s1[0] !== '.' && s1[0] !== '/' && s1[0] !== '../') {
+            return `from '/@modules/${s1}'`
+        }
+        return s1;
+    });
+}
 
 
 app.listen(3000, () => {
