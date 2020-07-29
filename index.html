@@ -8,6 +8,14 @@
 </head>
 
 <body>
+    <script>
+        // 开发环境避免报错
+        window.process = {
+            env: {
+                NODE_ENV: 'DEV'
+            }
+        }
+    </script>
     <script type="module" src="./src/main.js"></script>
     <!-- <script src="./src/main.js"></script> -->
 </body>

@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "koa": "^2.13.0"
+    "koa": "^2.13.0",
+    "vue": "^3.0.0-rc.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

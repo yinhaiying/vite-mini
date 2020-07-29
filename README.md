@@ -6,7 +6,9 @@
 需要我们从node_modules中进行查找。
 
 2. 支持import vue  (原理：从node_modules中获取)
-需要将import xx from 'vue'改造成 import xx from '/@modules/vue/'，这样的话浏览器才能够发出请求。
+   * 需要将import xx from 'vue'改造成 import xx from '/@modules/vue/'，这样的话浏览器才能够发出请求。
+   * 拦截@modules开头的请求，然后去node_modules中进行查找。
+   vue -> package.json   -> modules(对应的dist/vue.runtime.esm.js)
 
 
 ## 缺点

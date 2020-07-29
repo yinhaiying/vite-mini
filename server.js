@@ -16,6 +16,18 @@ app.use(async (ctx) => {
         ctx.type = "application/javascript";
         // 需要将js文件中的import xxx from 'vue' 改造成import xxx from '@modules/vue'
         ctx.body = rewriteimport(content);
+    } else if (url.startsWith('/@modules/')) {
+        // 去node_modules中进行查找
+        // console.log('url:', url)    /@modules/vue
+        const prefix = path.resolve(__dirname, 'node_modules', url.replace('/@modules/', ''));
+        console.log('prefix:', prefix);  // 找到node_modules/vue
+        const module = require(prefix + '/package.json').module;   // 获取到module路径
+        console.log('module:', module);
+        const _path = path.resolve(prefix, module)
+        console.log('_path:', _path);  // H:\study\vite-mini\node_modules\vue\dist\vue.runtime.esm.js
+        const content = fs.readFileSync(_path, 'utf-8');
+        ctx.type = "application/javascript";
+        ctx.body = rewriteimport(content)
     }
 })
 
