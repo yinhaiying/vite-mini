@@ -1,13 +1,5 @@
-import { ref, watchEffect } from 'vue';
+import { createApp } from 'vue';
 
-let count = ref(0);
+import App from "App.vue"
 
-watchEffect(() => {
-    console.log('count', count.value)
-})
-const timer = setInterval(() => {
-    count.value++;
-    if (count.value === 10) {
-        clearInterval(timer)
-    }
-}, 1000)
+createApp(App).mount('#app')
