@@ -21,6 +21,21 @@ app.use(async (ctx) => {
     ctx.type = "application/javascript";
     // 需要将js文件中的import xxx from 'vue' 改造成import xxx from '@modules/vue'
     ctx.body = rewriteimport(content);
+  } else if (url.endsWith(".css")) {
+    console.log("先走css");
+    const p = path.resolve(__dirname, "src", url.replace("/@modules/", ""));
+    let file = fs.readFileSync(p, "utf-8");
+    const content = ` 
+      const css = '${file.replace(/[ ]|[\r\n]/g, "")}';
+      let link = document.createElement('style');
+      link.setAttribute('type','text/css');
+      document.head.appendChild(link);
+      link.innerHTML = css;
+      export default css;
+    `;
+    ctx.type = "application/javascript";
+    ctx.body = rewriteimport(content);
+    return;
   } else if (url.startsWith("/@modules/")) {
     if (!(url.indexOf(".vue") > -1)) {
       // 去node_modules中进行查找
@@ -73,12 +88,12 @@ app.use(async (ctx) => {
       } else if (query.type === "template") {
         // 处理template
         const template = descriptor.template;
-        console.log("render转换之前", template.content);
+        // console.log("render转换之前", template.content);
         // const render = template;
         // 需要把template转换成render函数形式 使用@vue/compiler-dom
         const render = compilerDom.compile(template.content, { mode: "module" })
           .code;
-        console.log("转换之后", render);
+        // console.log("转换之后", render);
         ctx.body = rewriteimport(render);
       }
     }

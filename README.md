@@ -49,6 +49,29 @@
    ctx.body = rewriteimport(render);
    ```
 
+4. 支持 css
+
+```javascript
+const p = path.resolve(__dirname, "src", url.replace("/@modules/", ""));
+let file = fs.readFileSync(p, "utf-8");
+const content = ` 
+      const css = '${file.replace(/[ ]|[\r\n]/g, "")}';
+      let link = document.createElement('style');
+      link.setAttribute('type','text/css');
+      document.head.appendChild(link);
+      link.innerHTML = css;
+      export default css;
+    `;
+ctx.type = "application/javascript";
+ctx.body = rewriteimport(content);
+```
+
+## 对其他非 js 文件的支持
+
+- 支持 ts
+- 支持 css
+- 支持 less
+
 ## 缺点
 
 目前只要适用于开发环境，如果是线上环境的话，可能还是需要使用 webpack 或者 rollup 打包成 ES5。

@@ -7,6 +7,7 @@
 
 <script>
 import { ref, computed } from "vue";
+import "./App.css";
 export default {
   name: "App",
   setup() {
