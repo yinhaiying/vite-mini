@@ -24,7 +24,7 @@
       export default __script
     ```
    创建一个__script变量，所有的js都放在变量中，然后template和style都放入变量中，最后导出这个变量。
-
+   
 ## 缺点
 目前只要适用于开发环境，如果是线上环境的话，可能还是需要使用webpack或者rollup打包成ES5。
 毕竟支持ES Module的浏览器还是比较少。

@@ -22,7 +22,7 @@ app.use(async (ctx) => {
         // 需要将js文件中的import xxx from 'vue' 改造成import xxx from '@modules/vue'
         ctx.body = rewriteimport(content);
     } else if (url.startsWith('/@modules/')) {
-        if (!url.endsWith('.vue')) {
+        if (!(url.indexOf('.vue') > -1)) {
             // 去node_modules中进行查找
             // console.log('url:', url)    /@modules/vue
             const prefix = path.resolve(__dirname, 'node_modules', url.replace('/@modules/', ''));
@@ -39,13 +39,28 @@ app.use(async (ctx) => {
             console.log('vue');
 
             const p = path.resolve(__dirname, 'src', url.replace('/@modules/', ''));
-            // console.log('p', p)
+            console.log('p', p)
             const { descriptor } = compilerSfc.parse(fs.readFileSync(p, 'utf-8'));
             // console.log(descriptor);
             ctx.type = "application/javascript";
             const __script = rewriteimport(descriptor.script.content).replace('export default', 'const __script=')
             // console.log(__script)
-            ctx.body = __script;
+            // 处理template和style
+            // import { render as __render } from "/src/views/docs/aside.vue?type=template"
+            // __script.render = __render
+            // import { render as __render } from "/src/App.vue?type=template"
+            if (!query.type) {
+                // 处理js
+            } else if (query.type === 'template') {
+                // 处理template
+            }
+
+
+            ctx.body = `
+            ${__script}
+            import { render as __render } from "${url}?type=template"
+            __script.render = __render
+            `
         }
 
     }
