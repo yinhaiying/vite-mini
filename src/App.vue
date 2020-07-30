@@ -1,8 +1,6 @@
- 
-
 <template>
   <div>
-    <h2>{{count}} * 2 = {{double}}</h2>
+    <h2>{{ count }} * 2 = {{ double }}</h2>
     <button @click="add">add</button>
   </div>
 </template>
@@ -17,7 +15,7 @@ export default {
       count.value++;
     }
     const double = computed(() => {
-      count.value * 2;
+      return count.value * 2;
     });
     return {
       count,
@@ -28,5 +26,4 @@ export default {
 };
 </script>
 
-<style>
-</style> 
+<style></style>
